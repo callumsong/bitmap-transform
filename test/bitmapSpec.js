@@ -3,11 +3,11 @@
  */
 'use strict';
 
-//var expect = require('chai').expect;
-//var bitmap = require('../lib/bitmap');
+var expect = require('chai').expect;
+var bitmap = require('../lib/bitmap');
+var fs = require('fs');
 
-//var bitmap = require('../lib/bitmap');
-/*var updatedPalette =
+var updatedPalette =
  [ [ 255, 255, 255, 0 ],
  [ 203, 223, 221, 0 ],
  [ 195, 215, 186, 0 ],
@@ -263,4 +263,43 @@
  [ 255, 255, 255, 0 ],
  [ 255, 255, 255, 0 ],
  [ 255, 255, 255, 0 ],
- [ 255, 255, 255, 0 ] ];*/
+ [ 255, 255, 255, 0 ] ];
+
+describe("bitmap library", function() {
+	it("readBitmap should open a bitmap file", function(){
+		bitmap.readBitmap("test.bmp");
+		expect(bitmap.getPalette()[0]).to.eql([0,0,0,0]);
+	});
+
+	describe("writeBitmap", function() {
+		before(function() {
+			if(fs.existsSync("new3.bmp")){
+				fs.unlinkSync("new3.bmp");
+			}
+			bitmap.readBitmap("test.bmp");
+		});
+
+		after(function() {
+			fs.unlinkSync("new3.bmp");
+		});
+
+		it("should write new3.bmp file", function() {
+			bitmap.writeBitmap("new3.bmp");
+			expect(fs.existsSync("new3.bmp")).to.eql(true);
+		});
+
+	});
+
+	it("updatePalette should modify the palette when passed a pixel function", function() {
+		bitmap.readBitmap("test.bmp");
+		bitmap.updatePalette(bitmap.transformNegative8);
+		expect(bitmap.getPalette()).to.eql(updatedPalette);
+	});
+
+	it("transformNegative8 should return a negative RGB pixel", function() {
+		var inputBuff = new Buffer([0,0,0,0]);
+		var outputBuff = new Buffer([255,255,255,0]);
+		bitmap.transformNegative8(inputBuff);
+		expect(inputBuff).to.eql(outputBuff);
+	});
+});

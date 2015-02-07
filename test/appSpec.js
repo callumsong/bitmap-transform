@@ -21,4 +21,26 @@ describe("app from index", function() {
 	it("should take inputFileName and InputNewFileName", function() {
 		expect(fs.existsSync("new.bmp")).to.eql(true);
 	});
+
+	describe("should process process.argv", function () {
+		var argCache;
+
+		before(function() {
+			argCache = process.argv;
+			process.argv = ['node', 'index.js', 'test.bmp', 'new2.bmp'];
+			if(fs.exists("new2.bmp")) {
+				fs.unlinkSync("new2.bmp");
+			}
+			app();
+		});
+
+		after(function() {
+			process.argv = argCache;
+			fs.unlinkSync("new2.bmp");
+		});
+
+		it("should read new2.bmp from process.argv[2]", function () {
+			expect(fs.existsSync("new2.bmp")).to.eql(true);
+		});
+	});
 });
