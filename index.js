@@ -5,15 +5,17 @@
 
 var bitmap = require('./lib/bitmap');
 
-var fileName = process.argv[2] || "test.bmp";
-var newFileName = process.argv[3] || "transformed_" + fileName;
+var app = function(inputFileName, inputNewFileName) {
+	var fileName = inputFileName || process.argv[2] || "test.bmp";
+	var newFileName = inputNewFileName || process.argv[3] || "transformed_" + fileName;
+	bitmap.readBitmap(fileName);
+	console.log("Opening file " + fileName + ".");
+	bitmap.updatePalette(bitmap.transformNegative8);
+	console.log("Updating palette.");
+	bitmap.writeBitmap(newFileName);
+	console.log("Writing file " + newFileName);
+};
 
+app();
 
-bitmap.readBitmap(fileName);
-console.log("Opening file " + fileName + ".");
-bitmap.updatePalette(bitmap.transformNegative8);
-console.log("Updating palette.");
-bitmap.writeBitmap(newFileName);
-console.log("Writing file " + newFileName);
-
-//console.log(bitmap.getPalette());
+module.exports = app;
