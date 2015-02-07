@@ -11,3 +11,9 @@ For this assignment you will be building a Bitmap reader and transformer. It wil
 4. Turn the transformed object back into a buffer.
 
 5. Write that buffer to a new file.
+
+To run the app: $node index.js [input file name] [output file name]
+
+If you don't use input file name, the app uses test.bmp as a default.
+
+If you don't use output file name, the app uses transformed_[input file name].
